@@ -3,6 +3,7 @@ const mongoose = require("mongoose");
 const commentSchema = mongoose.Schema({
   text: {
     type: String,
+    required: [true, "Comment required"],
   },
   createdAt: {
     type: Date,
@@ -16,6 +17,13 @@ const commentSchema = mongoose.Schema({
     username: {
       type: String,
     },
+    avatar_image: {
+      type: String,
+    },
+  },
+  foodground: {
+    type: [mongoose.Schema.Types.ObjectId],
+    ref: "foodground",
   },
 });
 

@@ -5,17 +5,24 @@
       <div class="row d-flex justify-content-center align-items-center">
         <img
           src="<%= foodground.image.path %>"
-          style="height:auto; max-width: 450px;"
+          style="height: auto; max-width: 450px"
         />
       </div>
       <div class="col mt-2 text-center">
         <button
+          id="btn-focus"
           type="button"
-          class="btn btn-primary"
+          class="btn btn-xs"
           data-bs-toggle="modal"
           data-bs-target="#exampleModal"
         >
-          View on map
+          <ion-icon
+            name="location-outline"
+            data-bs-toggle="tooltip"
+            data-bs-placement="bottom"
+            title="Map"
+            style="font-size: 35px"
+          ></ion-icon>
         </button>
       </div>
     </div>
@@ -23,26 +30,93 @@
       <div class="row">
         <div class="col mt-3 px-3 bottom-border">
           <h1><%= foodground.name%></h1>
-          <p>cusine</p>
           <p><%= foodground.description%></p>
           <p class="text-muted"><%= foodground.location %></p>
-          <p><span class="text-warning">Open at</span> - 8am - 10pm</p>
-          <p><span>Call</span> - <span>1234567890</span></p>
+          <p><span class="text-warning">Timimg :</span> <span><%= foodground.openingTime %> - <%=foodground.closingTime %></span></p>
+          <p><span>Call</span> - <span><%= foodground.contactNumber%></span></p>
+          <p><span>People liked so far</span> : <span><%= foodground.likes.count%></span></p>
           <a
-            class="btn btn-success"
+            class="btn btn-xs"
             href="/foodgrounds/<%= foodground._id%>/comments/new"
-            >Add comment</a
-          >
-          <div class="col d-flex justify-content-end">
-            <% if(currentUser && foodground.author.id.toString()===
-            currentUser._id.toString()){%>
-            <a class="btn btn-warning mx-2" href="/foodgrounds/<%= foodground._id%>/edit">edit</a>
-            <form action="/foodgrounds/<%= foodground._id%>/delete?_method=DELETE" method="POST" style="display: inline">
-              <button class="btn btn-danger btn-xs">delete</button>
-            </form>
-            <%} %>
-          </div>
+            id="btn-focus"
+            ><ion-icon
+              name="chatbox-ellipses-outline"
+              style="font-size: 25px"
+              data-bs-toggle="tooltip"
+              data-bs-placement="bottom"
+              title="Comment"
+            ></ion-icon
+          ></a>
 
+          <form
+            action="/like-foodground/<%= foodground._id%>"
+            method="post"
+            style="display: inline"
+          >
+            <% if(currentUser){ %>
+            <button
+              type="submit"
+              class="btn btn-xs"
+              id="btn-focus"
+              style="outline: none"
+            >
+              <ion-icon
+                name="<%= foodground.likes.users.find(ele => ele.toString() === currentUser._id.toString()) ? 'thumbs-down-outline' : 'thumbs-up-outline' %>"
+                data-bs-toggle="tooltip"
+                data-bs-placement="bottom"
+                title="<%= foodground.likes.users.find(ele => ele.toString() === currentUser._id.toString()) ? 'Unlike' : 'Like' %>"
+                style="font-size: 25px"
+              ></ion-icon>
+            </button>
+            <%} else { %>
+            <button
+              type="submit"
+              class="btn btn-xs"
+              id="btn-focus"
+              style="outline: none"
+            >
+              <ion-icon
+                name="thumbs-up-outline"
+                data-bs-toggle="tooltip"
+                data-bs-placement="bottom"
+                title="Like"
+                style="font-size: 25px"
+              ></ion-icon>
+            </button>
+            <%} %>
+          </form>
+        </div>
+        <div class="col text-end mt-3">
+          <% if(currentUser && foodground.author.id.toString()===
+          currentUser._id.toString()){%>
+          <a
+            id="btn-focus"
+            class="btn btn-xs mx-auto"
+            href="/foodgrounds/<%= foodground._id%>/edit"
+            ><ion-icon
+              name="create-outline"
+              data-bs-toggle="tooltip"
+              data-bs-placement="bottom"
+              title="Edit"
+              style="font-size: 25px"
+            ></ion-icon
+          ></a>
+          <form
+            action="/foodgrounds/<%= foodground._id%>/delete?_method=DELETE"
+            method="POST"
+            style="display: inline"
+          >
+            <button id="btn-focus" class="btn btn-xs">
+              <ion-icon
+                name="trash-bin-outline"
+                data-bs-toggle="tooltip"
+                data-bs-placement="bottom"
+                title="Delete"
+                style="font-size: 25px"
+              ></ion-icon>
+            </button>
+          </form>
+          <%} %>
         </div>
       </div>
       <hr />
@@ -58,10 +132,10 @@
         >
           <div class="col d-flex">
             <img
-              class="rounded-circle"
+              class="rounded-circle mt-3"
               alt="#"
-              src="https://png.pngtree.com/png-vector/20190223/ourmid/pngtree-vector-avatar-icon-png-image_695765.jpg"
-              style="height: 75px; width: 75px"
+              src="<%= comment.author.avatar_image%>"
+              style="max-width: 60px; height: 55px"
             />
             <div class="card-body">
               <div class="col">
@@ -72,16 +146,31 @@
                 <% if(currentUser && comment.author.id.toString()===
                 currentUser._id.toString()){ %>
                 <a
-                  class="btn btn-warning btn-xs"
+                  id="btn-focus"
+                  class="btn btn-xs"
                   href="/foodgrounds/<%= foodground._id%>/comments/<%=comment._id%>/edit"
-                  >edit</a
-                >
+                  ><ion-icon
+                    name="create-outline"
+                    data-bs-toggle="tooltip"
+                    data-bs-placement="bottom"
+                    title="Edit"
+                    style="font-size: 25px"
+                  ></ion-icon
+                ></a>
                 <form
-                  action="foodgrounds/<%=foodground._id%>/comments/<%=comment._id%>?_method=DELETE"
+                  action="/foodgrounds/<%=foodground._id%>/comments/<%=comment._id%>?_method=DELETE"
                   method="POST"
                   style="display: inline"
                 >
-                  <button class="btn btn-danger btn-xs">delete</button>
+                  <button id="btn-focus" class="btn btn-xs">
+                    <ion-icon
+                      name="trash-bin-outline"
+                      data-bs-toggle="tooltip"
+                      data-bs-placement="bottom"
+                      title="Delete"
+                      style="font-size: 25px"
+                    ></ion-icon>
+                  </button>
                 </form>
                 <%}%>
                 <div>
